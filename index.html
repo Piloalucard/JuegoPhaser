@@ -104,23 +104,50 @@ function create ()
     platforms = this.physics.add.staticGroup();
 
 
-    //Spawn
-    for(i=900;i<=990;i+=30)
+    //Creating map
+    for(i=930;i<=990;i+=30)
     {
-        platforms.create(i, 100, 'ground').setScale(2).refreshBody();
+        platforms.create(i, 100, 'ground').setScale(1.5).refreshBody();
     }
     // The player and its settings
-    player = this.physics.add.sprite(900, 0, 'crash');
+    player = this.physics.add.sprite(510, 0, 'crash');
     player.setCollideWorldBounds(true);
 
-    //Creating map
+    
+    platforms.create(850, 250, 'ground').setScale(1.5).refreshBody();
+    
+    var t=1;
+    for(i=200;i<800;i+=30)
+    {
+        if((t%4==0))
+        {
+            platforms.create(i, 400, 'ground').setScale(1.5).refreshBody();
+        }
+        t++;
+    }
+
+    platforms.create(200, 250, 'ground').setScale(1.5).refreshBody();
+    for(i=30;i<=90;i+=30)
+    {
+        platforms.create(i, 100, 'ground').setScale(1.5).refreshBody();
+    }
+    for(i=420;i<=650;i+=30)
+    {
+        platforms.create(i, 150, 'ground').setScale(1.5).refreshBody();
+    }
+    platforms.create(100, 550, 'ground').setScale(1.5).refreshBody();
+    platforms.create(924, 550, 'ground').setScale(1.5).refreshBody();
+
+    platforms.create(482, 550, 'ground').setScale(1.5).refreshBody();
+    platforms.create(512, 550, 'ground').setScale(1.5).refreshBody();
+    platforms.create(542, 550, 'ground').setScale(1.5).refreshBody();
 
     
     
     //Floor
     for(i=0;i<=1024;i+=30)
     {
-        platforms.create(i, 750, 'ground').setScale(2).refreshBody();
+        platforms.create(i, 740, 'ground').setScale(2).refreshBody();
     }
 
     //Animations
@@ -221,8 +248,8 @@ function create ()
     this.physics.add.collider(floor, platforms);
 
     //Wumpas and crate wumpas physics
-    this.physics.add.collider(player, wumpas, collectWumpa, null, this);
-    this.physics.add.collider(player, cWumpas, collectWumpa, null, this);
+    this.physics.add.overlap(player, wumpas, collectWumpa, null, this);
+    this.physics.add.overlap(player, cWumpas, collectWumpa, null, this);
     this.physics.add.collider(floor, wumpas, destroyWumpa, null, this);
     this.physics.add.collider(floor, cWumpas, destroyWumpa, null, this);
 
@@ -235,6 +262,9 @@ function create ()
 }
 
 var last=0;
+var pressed=0;
+var wasDown=0;
+var saltos=0;
 function update ()
 {
     
@@ -278,12 +308,44 @@ function update ()
         
     }
 
-    if (cursors.up.isDown && player.body.touching.down)
-    {
-        player.setVelocityY(-200);
+    
 
+    
+    if(cursors.up.isDown)
+    {
+        wasDown=1;
+    }
+    else if(cursors.up.isUp && wasDown == 1)
+    {
+        pressed=1;
+        wasDown=0;
+    }
+
+    
+    if (pressed==1 &&  saltos===0)
+    {
+        player.setVelocityY(-220);
+        saltos=1;
+        pressed=0;
         
     }
+    else if (pressed==1 &&  saltos===1)
+    {
+        player.setVelocityY(-220);
+        saltos=2;
+        console.log("2do salto");
+        pressed=0;
+    }
+    
+
+    else if(player.body.touching.down)
+    {
+        saltos=0;
+    }
+    
+
+
+
     if (!player.body.touching.down)
     {
         if (last==0)
@@ -317,7 +379,7 @@ function rompiendoCaja (player,caja)
         //Creates wumpas
         for(i =0;i <Phaser.Math.Between(2, 12);i++)
         {
-            var cWumpa= cWumpas.create(aux+i, cy-(i*2), 'wumpa');
+            var cWumpa= cWumpas.create(aux+(i*2), cy-(i*2), 'wumpa');
         }
 
         //Crate sound and animation
