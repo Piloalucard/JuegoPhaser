@@ -220,7 +220,7 @@ function create ()
     });
 
     //  Physics for spikes
-    floor = this.physics.add.group({
+    floor = this.physics.add.staticGroup({
         key: 'spikes',
         repeat: 10,
         setXY: { x: 0, y: 680, stepX: 120 },
